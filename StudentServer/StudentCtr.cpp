@@ -25,6 +25,33 @@ bool StudentCtr::checkID(int id)
 	return false;
 }
 
+bool StudentCtr::checkName(string name)
+{
+	DAO dao;
+	list<Student> list2 = dao.readList("output.txt");
+	list<Student>::iterator it;
+	for (it = list2.begin(); it != list2.end(); it++) {
+		if ((*it).getName() == name) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool StudentCtr::checkSum(float sum)
+{
+	DAO dao;
+	list<Student> list2 = dao.readList("output.txt");
+	list<Student>::iterator it;
+	for (it = list2.begin(); it != list2.end(); it++) {
+		float sum1 = (*it).getMath() + (*it).getPhys() + (*it).getChem();
+		if (sum1 == sum) {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool StudentCtr::add(Student st)
 {
 	DAO dao;
@@ -101,7 +128,6 @@ Student StudentCtr::searchID(int id)
 	Student st;
 	DAO dao;
 	list2 = dao.readList("output.txt");
-	system("cls");
 	if (list2.empty()) cout << "empty" << endl;
 	else {
 		int k = 0;
@@ -123,20 +149,15 @@ Student StudentCtr::searchID(int id)
 	}
 }
 
-void StudentCtr::searchName()
+string StudentCtr::searchName(string name)
 {
-	list<Student> list2, result_search;
+	list<Student> list2;
 	list<Student>::iterator it;
 	Student st = Student();
 	DAO dao;
 	list2 = dao.readList("output.txt");
-	system("cls");
 	if (list2.empty()) cout << "empty" << endl;
 	else {
-		string name;
-		cout << "enter Name: ";
-		cin.ignore();
-		getline(cin, name);
 		int k = 0;
 		for (it = list2.begin(); it != list2.end(); it++) {
 			if ((*it).getName() == name) {
@@ -149,28 +170,26 @@ void StudentCtr::searchName()
 				st.setPhys((*it).getPhys());
 				st.setChem((*it).getChem());
 				Student st = Student((*it).getID(), (*it).getName(), (*it).getAddress(), (*it).getSex(), (*it).getMath(), (*it).getPhys(), (*it).getChem());
-				result_search.push_back(st);
+				dao.writeFile(st, "search.txt");
+				
 			}
 		}
 		if (k == 0) cout << "not found" << endl;
-		else
-			sort(result_search);
 	}
+	string result = dao.readFile("search.txt");
+	remove("search.txt");
+	return result;
 }
 
-void StudentCtr::searchSum()
+string StudentCtr::searchSum(float sum)
 {
-	list<Student> list2, result;
+	list<Student> list2;
 	list<Student>::iterator it;
 	Student st;
 	DAO dao;
 	list2 = dao.readList("output.txt");
-	system("cls");
 	if (list2.empty()) cout << "empty" << endl;
 	else {
-		int sum;
-		cout << "enter Sum: ";
-		cin >> sum;
 		int k = 0;
 		for (it = list2.begin(); it != list2.end(); it++) {
 			float Sum = (*it).getMath() + (*it).getPhys() + (*it).getChem();
@@ -183,13 +202,14 @@ void StudentCtr::searchSum()
 				st.setMath((*it).getMath());
 				st.setPhys((*it).getPhys());
 				st.setChem((*it).getChem());
-				result.push_back(st);
+				dao.writeFile(st, "search.txt");
 			}
 		}
 		if (k == 0) cout << "not found" << endl;
-		else
-			sort(result);
 	}
+	string result = dao.readFile("search.txt");
+	remove("search.txt");
+	return result;
 }
 
 void StudentCtr::searchMath()

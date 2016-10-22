@@ -77,6 +77,9 @@ int main() {
 			if (x2 == "OK" || x2 == "ok") {
 				send(newConn, welcome, sizeof(welcome), NULL);
 			}
+			else {
+				send(newConn, welcome, sizeof(welcome), NULL);
+			}
 		}
 		if (x == "2") {//add
 			char id[1000], name[1000], sex[1000], addr[1000], math[1000], phys[1000], chem[1000];
@@ -120,7 +123,7 @@ int main() {
 				send(newConn, exist, sizeof(welcome), NULL);
 				recv(newConn, mesRecv, sizeof(welcome), NULL);
 				string mesRecv2(mesRecv);
-				if (mesRecv2 == "ok") {
+				if (mesRecv2 == "ok" || mesRecv2 == "OK") {
 					send(newConn, welcome, sizeof(welcome), NULL);
 				}
 				else {
@@ -129,10 +132,10 @@ int main() {
 			}
 			else {
 				if (sc.add(st) == true) {
-					send(newConn, welcome, sizeof(success), NULL);
+					send(newConn, welcome, sizeof(welcome), NULL);
 				}
 				else {
-					send(newConn, welcome, sizeof(fail), NULL);
+					send(newConn, welcome, sizeof(welcome), NULL);
 				}
 			}
 		}
@@ -261,25 +264,81 @@ int main() {
 				char id[1000];
 				recv(newConn, id, 1000, NULL);
 				int id1 = stoi(id);
-				Student st = sc.searchID(id1);
-				string send1 = "ID: " + Convert2(st.getID()) + "\nName: " + st.getName() + "\nAddr: " + st.getAddress() + "\nSex: " + st.getSex() + "\nMath: " + Convert(st.getMath()) + "\nPhys: " + Convert(st.getPhys()) + "\nChem: " + Convert(st.getChem()) + "\nEnter 'OK': ";
-				const char* send2 = send1.c_str();
-				send(newConn, send2, sizeof(welcome), NULL);
-				char x3[1000];
-				recv(newConn, x3, sizeof(welcome), NULL);
-				string x2(x3);
-				if (x2 == "OK" || x2 == "ok") {
-					send(newConn, welcome, sizeof(welcome), NULL);
+				if (!sc.checkID(id1)) {
+					send(newConn, notfound, sizeof(welcome), NULL);
+					recv(newConn, mesRecv, sizeof(welcome), NULL);
+					string mesRecv2(mesRecv);
+					if (mesRecv2 != "ok--zzzzzzzzzzz") {
+						send(newConn, welcome, sizeof(welcome), NULL);
+					}
 				}
 				else {
-					send(newConn, welcome, sizeof(welcome), NULL);
+					Student st = sc.searchID(id1);
+					string send1 = "ID: " + Convert2(st.getID()) + "\nName: " + st.getName() + "\nAddr: " + st.getAddress() + "\nSex: " + st.getSex() + "\nMath: " + Convert(st.getMath()) + "\nPhys: " + Convert(st.getPhys()) + "\nChem: " + Convert(st.getChem()) + "\nEnter 'OK': ";
+					const char* send2 = send1.c_str();
+					send(newConn, send2, sizeof(welcome), NULL);
+					char x3[1000];
+					recv(newConn, x3, sizeof(welcome), NULL);
+					string x2(x3);
+					if (x2 == "OK" || x2 == "ok") {
+						send(newConn, welcome, sizeof(welcome), NULL);
+					}
+					else {
+						send(newConn, welcome, sizeof(welcome), NULL);
+					}
 				}
 			}
-			if (choice == "2") {//search by Name
-
+			if (choice1 == "2") {//search by Name
+				char sName[1000] = "Enter Name: ";
+				send(newConn, sName, 1000, NULL);
+				recv(newConn, mesRecv, 1000, NULL);
+				string sName1(mesRecv);
+				if (!sc.checkName(sName1)) {
+					send(newConn, notfound, sizeof(welcome), NULL);
+					recv(newConn, mesRecv, sizeof(welcome), NULL);
+					string mesRecv3(mesRecv);
+					if (mesRecv3 != "ok--zzzzzzzzzzz") {
+						send(newConn, welcome, sizeof(welcome), NULL);
+					}
+				}
+				else {
+					string result = sc.searchName(sName1) + "enter 'OK': ";
+					const char* result1 = result.c_str();
+					send(newConn, result1, 1000, NULL);
+					recv(newConn, mesRecv, sizeof(welcome), NULL);
+					string x2(mesRecv);
+					if (x2 != "x-ttt________") {
+						send(newConn, welcome, sizeof(welcome), NULL);
+					}
+				}
 			}
-			if (choice == "3") {//search by Sum
+			if (choice1 == "3") {//search by Sum
+				char sSum[1000] = "Enter Sum: ";
+				send(newConn, sSum, 1000, NULL);
+				recv(newConn, mesRecv, 1000, NULL);
+				float sSum1 = stof(mesRecv);
+				if (!sc.checkSum(sSum1)) {
+					send(newConn, notfound, sizeof(welcome), NULL);
+					recv(newConn, mesRecv, sizeof(welcome), NULL);
+					string mesRecv4(mesRecv);
+					if (mesRecv4 != "ok--zzzzzzzzzzz") {
+						send(newConn, welcome, sizeof(welcome), NULL);
+					}
+				}
+				else {
+					string result = sc.searchSum(sSum1) + "enter 'OK': ";
+					const char* result1 = result.c_str();
+					send(newConn, result1, 1000, NULL);
 
+					recv(newConn, mesRecv, sizeof(welcome), NULL);
+					string x2(mesRecv);
+					if (x2 == "OK" || x2 == "ok") {
+						send(newConn, welcome, sizeof(welcome), NULL);
+					}
+					else {
+						send(newConn, welcome, sizeof(welcome), NULL);
+					}
+				}
 			}
 		}
 		if (x == "6") {

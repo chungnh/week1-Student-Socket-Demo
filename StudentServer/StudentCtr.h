@@ -6,12 +6,14 @@ class StudentCtr
 {
 public:
 	bool checkID(int);
+	bool checkName(string);
+	bool checkSum(float);
 	bool add(Student);
 	string showAll();
 	StudentCtr();
 	Student searchID(int);
-	void searchName();
-	void searchSum();
+	string searchName(string);
+	string searchSum(float);
 	void searchMath();
 	void searchPhys();
 	void searchChem();
